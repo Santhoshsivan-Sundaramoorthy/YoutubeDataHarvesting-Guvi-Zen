@@ -1,7 +1,7 @@
 import streamlit as st
 from pymongo import MongoClient
 from googleClientYoutubeData import dataExtraction
-from toSql import sqlStoring, channelData, playlistData, videoData
+from toSql import sqlStoring, channelData, playlistData, videoData, commentData
 
 # Initializing MongoDB Connection
 client = MongoClient('mongodb://localhost:27017/')
@@ -51,4 +51,5 @@ if st.button('Initiate Storing in SQL'):
     st.table(channelData())
     st.table(playlistData())
     st.table(videoData())
+    st.table(commentData())
 

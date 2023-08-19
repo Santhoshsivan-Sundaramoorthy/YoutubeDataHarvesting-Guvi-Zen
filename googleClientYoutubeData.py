@@ -25,6 +25,7 @@ def dataExtraction(api_key, channel_id):
     # Fetch playlist IDs and titles for the channel
     playlist_response = youtube.playlists().list(part="snippet", channelId=channel_id).execute()
     playlist_items = playlist_response.get('items', [])
+    print(playlist_items)
 
     for item in playlist_items:
         playlist_info = {

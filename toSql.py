@@ -37,7 +37,8 @@ def sqlStoring(channel_data_list):
                 comment_count INT,
                 duration VARCHAR(50),
                 thumbnail VARCHAR(255),
-                caption_status BOOLEAN
+                caption_status BOOLEAN,
+                channel_id VARCHAR(255) REFERENCES channel(channel_id)
             )
         ''')
 
@@ -87,9 +88,9 @@ def sqlStoring(channel_data_list):
             INSERT OR REPLACE INTO video (
                 video_id, video_name, video_description, tags, published_at,
                 view_count, like_count, dislike_count, favorite_count,
-                comment_count, duration, thumbnail, caption_status
+                comment_count, duration, thumbnail, caption_status, channel_id
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             video['Video_Id'],
             video['Video_Name'],
@@ -103,9 +104,25 @@ def sqlStoring(channel_data_list):
             int(video['Comment_Count']),
             video['Duration'],
             video['Thumbnail'],
-            video['Caption_Status']
+            video['Caption_Status'],
+            channel_data_list['Channel_Id']
         ))
         print('VIDEO added')
+
+        for comment in video['Comments']:
+            cursor.execute('''
+                INSERT OR IGNORE INTO comment (
+                    comment_id, video_id, comment_text, comment_author, comment_published_at
+                )
+                VALUES (?, ?, ?, ?, ?)
+            ''', (
+                comment['Comment_Id'],
+                video['Video_Id'],
+                comment['Comment_Text'],
+                comment['Comment_Author'],
+                comment['Comment_PublishedAt']
+            ))
+            print('COMMENT added')
 
     conn.commit()
     conn.close()
@@ -128,6 +145,7 @@ def playlistData():
     conn.close()
     return playlist_data
 
+
 def videoData():
     conn = sqlite3.connect('youtube_data1.db')
     cursor = conn.cursor()
@@ -135,3 +153,12 @@ def videoData():
     video_data = cursor.fetchall()
     conn.close()
     return video_data
+
+
+def commentData():
+    conn = sqlite3.connect('youtube_data1.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM comment')
+    comment_data = cursor.fetchall()
+    conn.close()
+    return comment_data
