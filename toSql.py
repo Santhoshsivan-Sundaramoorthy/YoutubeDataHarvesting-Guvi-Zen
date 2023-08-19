@@ -69,6 +69,44 @@ def sqlStoring(channel_data_list):
     else:
         print("'Channel_Name' key not found in the document")
 
+    playlists = channel_data_list.get('Playlists', [])
+    for playlist in playlists:
+        cursor.execute('''
+                INSERT OR REPLACE INTO playlist (channel_id, playlist_id, playlist_title)
+                VALUES (?, ?, ?)
+            ''', (
+            channel_data_list['Channel_Id'],
+            playlist['Playlist_Id'],
+            playlist['Playlist_Title']
+        ))
+        print('PLAYLIST added')
+
+    videos = channel_data_list.get('Video_Info', [])
+    for video in videos:
+        cursor.execute('''
+            INSERT OR REPLACE INTO video (
+                video_id, video_name, video_description, tags, published_at,
+                view_count, like_count, dislike_count, favorite_count,
+                comment_count, duration, thumbnail, caption_status
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            video['Video_Id'],
+            video['Video_Name'],
+            video['Video_Description'],
+            ', '.join(video['Tags']),
+            video['PublishedAt'],
+            int(video['View_Count']),
+            int(video['Like_Count']),
+            int(video['Dislike_Count']),
+            int(video['Favorite_Count']),
+            int(video['Comment_Count']),
+            video['Duration'],
+            video['Thumbnail'],
+            video['Caption_Status']
+        ))
+        print('VIDEO added')
+
     conn.commit()
     conn.close()
 
@@ -82,3 +120,18 @@ def channelData():
     return channel_data
 
 
+def playlistData():
+    conn = sqlite3.connect('youtube_data1.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM playlist')
+    playlist_data = cursor.fetchall()
+    conn.close()
+    return playlist_data
+
+def videoData():
+    conn = sqlite3.connect('youtube_data1.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM video')
+    video_data = cursor.fetchall()
+    conn.close()
+    return video_data
