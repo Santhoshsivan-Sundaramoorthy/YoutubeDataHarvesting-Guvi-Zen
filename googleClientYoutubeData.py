@@ -16,9 +16,10 @@ def dataExtraction(api_key, channel_id):
             "Subscription_Count": channel_data['statistics']['subscriberCount'],
             "Channel_Views": channel_data['statistics']['viewCount'],
             "Channel_Description": channel_data['snippet']['description'],
-            "Playlists": []
-        },
-        "Video_Info": []
+            "Playlists": [],
+            "Video_Info": []
+        }
+
     }
 
     # Fetch playlist IDs and titles for the channel
@@ -74,7 +75,7 @@ def dataExtraction(api_key, channel_id):
                         "Caption_Status": video_data['contentDetails']['caption'],
                         "Comments": comments
                     }
-                    output["Video_Info"].append(video_info)
+                    output["Channel_Info"]["Video_Info"].append(video_info)
 
                 except googleapiclient.errors.HttpError as e:
                     if 'commentsDisabled' in str(e):
