@@ -137,19 +137,19 @@ def channelData():
     return channel_data
 
 
-def playlistData():
+def playlistData(channel_id):
     conn = sqlite3.connect('youtube_data1.db')
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM playlist')
+    cursor.execute('SELECT * FROM playlist WHERE channel_id = ?', (channel_id,))
     playlist_data = cursor.fetchall()
     conn.close()
     return playlist_data
 
 
-def videoData():
+def videoData(channel_id):
     conn = sqlite3.connect('youtube_data1.db')
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM video')
+    cursor.execute('SELECT * FROM video WHERE channel_id = ?', (channel_id,))
     video_data = cursor.fetchall()
     conn.close()
     return video_data
