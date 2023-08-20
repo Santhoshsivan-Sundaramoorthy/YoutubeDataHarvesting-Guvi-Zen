@@ -1,11 +1,10 @@
+import re
 import sqlite3
 
-
-def sqlStoring(channel_data_list):
+def tableCreation():
     # Connect to the SQLite database
     conn = sqlite3.connect('youtube_data1.db')
     cursor = conn.cursor()
-
     try:
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS channel (
@@ -35,7 +34,7 @@ def sqlStoring(channel_data_list):
                 dislike_count INT,
                 favorite_count INT,
                 comment_count INT,
-                duration VARCHAR(50),
+                duration INT,
                 thumbnail VARCHAR(255),
                 caption_status BOOLEAN,
                 channel_id VARCHAR(255) REFERENCES channel(channel_id)
@@ -55,7 +54,12 @@ def sqlStoring(channel_data_list):
         print('Table Done')
     except sqlite3.Error as e:
         print("Error:", e)
+    conn.close()
 
+def sqlStoring(channel_data_list):
+    # Connect to the SQLite database
+    conn = sqlite3.connect('youtube_data1.db')
+    cursor = conn.cursor()
     if 'Channel_Name' in channel_data_list:
         cursor.execute('''
                     INSERT OR REPLACE INTO channel (channel_id, channel_name, channel_views, channel_description)
@@ -84,6 +88,9 @@ def sqlStoring(channel_data_list):
 
     videos = channel_data_list.get('Video_Info', [])
     for video in videos:
+        duration = video['Duration']
+        seconds = iso8601_duration_to_seconds(duration)
+
         cursor.execute('''
             INSERT OR REPLACE INTO video (
                 video_id, video_name, video_description, tags, published_at,
@@ -102,7 +109,7 @@ def sqlStoring(channel_data_list):
             int(video['Dislike_Count']),
             int(video['Favorite_Count']),
             int(video['Comment_Count']),
-            video['Duration'],
+            seconds,
             video['Thumbnail'],
             video['Caption_Status'],
             channel_data_list['Channel_Id']
@@ -129,12 +136,16 @@ def sqlStoring(channel_data_list):
 
 
 def channelData():
-    conn = sqlite3.connect('youtube_data1.db')
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM channel')
-    channel_data = cursor.fetchall()
-    conn.close()
-    return channel_data
+    try:
+        conn = sqlite3.connect('youtube_data1.db')
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM channel')
+        channel_data = cursor.fetchall()
+        conn.close()
+        return channel_data
+    except Exception as e:
+        return None
+
 
 
 def playlistData(channel_id):
@@ -155,10 +166,22 @@ def videoData(channel_id):
     return video_data
 
 
-def commentData():
+def commentData(video_Id):
     conn = sqlite3.connect('youtube_data1.db')
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM comment')
+    cursor.execute('SELECT * FROM comment WHERE Video_Id = ?', (video_Id,))
     comment_data = cursor.fetchall()
     conn.close()
     return comment_data
+
+def iso8601_duration_to_seconds(duration):
+    duration_pattern = re.compile(r'PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?')
+    match = duration_pattern.match(duration)
+
+
+    hours = int(match.group(1) or 0)
+    minutes = int(match.group(2) or 0)
+    seconds = int(match.group(3) or 0)
+
+    total_seconds =  (hours * 3600) + (minutes * 60) + seconds
+    return total_seconds
