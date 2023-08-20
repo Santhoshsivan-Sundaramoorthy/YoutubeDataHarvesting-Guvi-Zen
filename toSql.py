@@ -1,6 +1,7 @@
 import re
 import sqlite3
 
+
 def tableCreation():
     # Connect to the SQLite database
     conn = sqlite3.connect('youtube_data1.db')
@@ -55,6 +56,7 @@ def tableCreation():
     except sqlite3.Error as e:
         print("Error:", e)
     conn.close()
+
 
 def sqlStoring(channel_data_list):
     # Connect to the SQLite database
@@ -144,8 +146,8 @@ def channelData():
         conn.close()
         return channel_data
     except Exception as e:
+        print(e)
         return None
-
 
 
 def playlistData(channel_id):
@@ -166,22 +168,22 @@ def videoData(channel_id):
     return video_data
 
 
-def commentData(video_Id):
+def commentData(video_id):
     conn = sqlite3.connect('youtube_data1.db')
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM comment WHERE Video_Id = ?', (video_Id,))
+    cursor.execute('SELECT * FROM comment WHERE Video_Id = ?', (video_id,))
     comment_data = cursor.fetchall()
     conn.close()
     return comment_data
+
 
 def iso8601_duration_to_seconds(duration):
     duration_pattern = re.compile(r'PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?')
     match = duration_pattern.match(duration)
 
-
     hours = int(match.group(1) or 0)
     minutes = int(match.group(2) or 0)
     seconds = int(match.group(3) or 0)
 
-    total_seconds =  (hours * 3600) + (minutes * 60) + seconds
+    total_seconds = (hours * 3600) + (minutes * 60) + seconds
     return total_seconds

@@ -6,6 +6,12 @@ from pymongo import MongoClient
 from googleClientYoutubeData import dataExtraction
 from toSql import sqlStoring, channelData, playlistData, videoData, commentData, tableCreation
 
+st.set_page_config(
+    page_title="Youtube Data Extraction",
+    page_icon="youtube.png",
+    layout="wide"
+)
+
 tableCreation()
 with st.container():
     image_path = "youtube.png"
@@ -28,15 +34,15 @@ def check_input_exists(channel):
     return result is None
 
 
-def fetch_channel_details(channel_name):
-    query = {"Channel_Info.Channel_Name": channel_name}
-    channel_info = collection.find_one(query)
+def fetch_channel_details(channel_name001):
+    query001 = {"Channel_Info.Channel_Name": channel_name001}
+    channel_info = collection.find_one(query001)
     return channel_info.get("Channel_Info") if channel_info else []
 
 
-def fetch_channel_id(channel_name):
-    query = {"Channel_Info.Channel_Name": channel_name}
-    channel_info = collection.find_one(query)
+def fetch_channel_id(channel_name002):
+    query002 = {"Channel_Info.Channel_Name": channel_name002}
+    channel_info = collection.find_one(query002)
 
     if channel_info:
         return channel_info["Channel_Info"]["Channel_Id"]
@@ -44,10 +50,10 @@ def fetch_channel_id(channel_name):
         return None
 
 
-def channelTableDesign(data):
+def channelTableDesign(data001):
     # Convert data to DataFrame
     columns = ['Channel Id', 'Channel Name', 'Like counts', 'Description']
-    original_df = pd.DataFrame(data, columns=columns)
+    original_df = pd.DataFrame(data001, columns=columns)
 
     # Create a new DataFrame with rearranged columns
     new_columns_order = ['Channel Name', 'Channel Id', 'Like counts', 'Description']
@@ -57,10 +63,10 @@ def channelTableDesign(data):
     return modified_df
 
 
-def playlistTableDesign(data):
+def playlistTableDesign(data002):
     # Convert data to DataFrame
     columns = ['Playlist ID', 'Playlist Name', 'Channel ID']
-    original_df = pd.DataFrame(data, columns=columns)
+    original_df = pd.DataFrame(data002, columns=columns)
 
     # Create a new DataFrame with rearranged columns
     new_columns_order = ['Playlist Name', 'Playlist ID', 'Channel ID']
@@ -70,12 +76,12 @@ def playlistTableDesign(data):
     return modified_df
 
 
-def videoTableDesign(data):
+def videoTableDesign(data003):
     # Convert data to DataFrame
     columns = ['Video ID', 'Video Title', 'Description', 'Tags', 'Published Date', 'View Count', 'Like Count',
                'Dislike Count', 'Favorite Count', 'Comment Count', 'Duration', 'Thumbnail', 'Caption Status',
                'Channel ID']
-    original_df = pd.DataFrame(data, columns=columns)
+    original_df = pd.DataFrame(data003, columns=columns)
 
     # Create a new DataFrame with rearranged columns
     new_columns_order = ['Video Title', 'Description', 'Video ID', 'Tags', 'Published Date', 'View Count', 'Like Count',
@@ -86,10 +92,10 @@ def videoTableDesign(data):
     return new_df
 
 
-def commentTableDesign(data):
+def commentTableDesign(data004):
     # Convert data to DataFrame
     columns = ['Comment ID', 'Comment', 'Commented By', 'Time', 'Video ID']
-    original_df = pd.DataFrame(data, columns=columns)
+    original_df = pd.DataFrame(data004, columns=columns)
 
     # Create a new DataFrame with rearranged columns
     new_columns_order = ['Comment', 'Commented By', 'Time', 'Comment ID', 'Video ID']
@@ -123,9 +129,9 @@ def questionQuery(query1):
     connection = sqlite3.connect('youtube_data1.db')
     cursor = connection.cursor()
     cursor.execute(query1)
-    results = cursor.fetchall()
+    results01 = cursor.fetchall()
     connection.close()
-    return results
+    return results01
 
 
 with col2:
@@ -149,14 +155,14 @@ st.write(f'Playlist Data of {selected_channel}')
 st.write(playlistChangedTableDesign)
 
 video_data = videoData(channel_id1)
-newdf = videoTableDesign(video_data)
+newDf = videoTableDesign(video_data)
 st.write(f'Video Data of {selected_channel}')
-st.write(newdf)
+st.write(newDf)
 
-selected_video = st.selectbox('Select a video title', newdf['Video Title'])
+selected_video = st.selectbox('Select a video title', newDf['Video Title'])
 with st.container():
     if selected_video:
-        selected_video_id = newdf[newdf['Video Title'] == selected_video]['Video ID'].values[0]
+        selected_video_id = newDf[newDf['Video Title'] == selected_video]['Video ID'].values[0]
         comment_Data = commentData(selected_video_id)
         commentChangedTable = commentTableDesign(comment_Data)
         st.write(f'Comment Data of {selected_video}')
@@ -223,7 +229,7 @@ if selectedQuestion:
             # Group data by channel and calculate total view count
             grouped_df = df.groupby('Channel Name')['View Count'].sum().reset_index()
 
-            # Display bar plot using Streamlit's native bar_chart function
+            # Display bar plot using Streamlit native bar_chart function
             st.bar_chart(grouped_df.set_index('Channel Name'))
 
     if selectedQuestion == questions[3]:
