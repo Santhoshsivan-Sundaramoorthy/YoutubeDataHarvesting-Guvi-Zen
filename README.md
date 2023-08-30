@@ -3,7 +3,7 @@
 
 # YouTube Data Harvesting and Warehousing Project
 
-[Watch the video on LinkedIn] (https://www.linkedin.com/posts/santhoshsivan-sundaramoorthy-084b48203_welcome-to-my-demonstration-video-showcasing-activity-7099282060082614272-hoY5?utm_source=share&utm_medium=member_desktop)
+[Watch the video on LinkedIn] (https://www.linkedin.com/posts/santhoshsivan-sundaramoorthy_welcome-to-my-demonstration-video-showcasing-activity-7099282060082614272-X4f6?utm_source=share&utm_medium=member_desktop)
 
 ## Overview
 This project aims to create a sophisticated data collection and storage system for YouTube content. By utilizing Python scripting, MongoDB, SQL databases, and Streamlit, the project focuses on efficiently gathering YouTube data, structuring it, and presenting meaningful insights through an interactive web interface.
