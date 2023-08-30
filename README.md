@@ -1,7 +1,16 @@
 # YoutubeDataHarvesting-Guvi-Zen
 "Project: Harvest YouTube data using Python, MongoDB, SQL, and Streamlit for insightful visualization."
 
-<iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7099281552328597504" height="717" width="504" frameborder="0" allowfullscreen="" title="Embedded post"></iframe>
+<html>
+<head>
+    <title>Embedded Video</title>
+</head>
+<body>
+    
+    <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7099281552328597504" height="717" width="504" frameborder="0" allowfullscreen="" title="Embedded post"></iframe>
+    
+</body>
+</html>
 
 # YouTube Data Harvesting and Warehousing Project
 
